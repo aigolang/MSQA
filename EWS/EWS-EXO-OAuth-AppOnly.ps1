@@ -1,5 +1,4 @@
-﻿# @Title: Test EWS OAuth with Application Type Permission (Exchange Online).
-# @auth: Will
+# @Title: Test EWS OAuth with Application Type Permission (Exchange Online)
 # @date: 2020.10.27
 
 ########### >>> Request Access_Token >>> ############ 
