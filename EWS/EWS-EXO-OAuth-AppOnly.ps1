@@ -28,6 +28,32 @@ $acc_token = $context.AccessToken;
 
 ############ <<< Request Access_Token <<< ###########
 
+# EWS Trace Log >>>
+function TraceHandler(){
+$sourceCode = @"
+    public class ewsTraceListener : Microsoft.Exchange.WebServices.Data.ITraceListener
+    {
+        public System.String LogFile {get;set;}
+        public void Trace(System.String traceType, System.String traceMessage)
+        {
+            System.IO.File.AppendAllText(this.LogFile, traceMessage);
+        }
+    }
+"@    
+
+   Add-Type -TypeDefinition $sourceCode -Language CSharp -ReferencedAssemblies $Script:EWSDLL
+   $TraceListener = New-Object ewsTraceListener
+
+   return $TraceListener
+}
+
+# EWS log Enabled
+$EWSService.TraceEnabled = $True
+$TraceHandlerObj = TraceHandler
+$TraceHandlerObj.LogFile = "C:\temp\EwsLog_$($TargetMailboxUPN).log"
+$EWSService.TraceListener = $TraceHandlerObj 
+# EWS Trace Log <<<
+
 ## Create the Exchange Service object with Oauth creds
 $EWSService = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService -ArgumentList Exchange2010_SP2
 $EWSService.Url= new-object Uri("https://outlook.office365.com/EWS/Exchange.asmx")
